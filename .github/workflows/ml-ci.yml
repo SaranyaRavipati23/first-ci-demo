@@ -1,3 +1,4 @@
+
 name: Student Result ML CI
 
 on:
@@ -23,21 +24,27 @@ jobs:
           python-version: '3.11'
 
       - name: Upgrade pip
-        run: |
-          python -m pip install --upgrade pip
+        run: python -m pip install --upgrade pip
 
       - name: Install dependencies
-        run: |
-          pip install -r requirements.txt
+        run: pip install -r requirements.txt
 
       - name: Run model training
-        run: |
-          python train_model.py
+        run: python train_model.py
 
       - name: Run quality gate
-        run: |
-          python quality_gate.py
+        run: python quality_gate.py
 
       - name: Run unit tests
-        run: |
-          python -m unittest discover -v
+        run: python -m unittest discover -v
+
+      - name: Upload validated ML artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          name: student-result-ml-artifacts
+          path: |
+            student_result_model.pkl
+            metrics.json
+            student_results.csv
+          if-no-files-found: error
+          retention-days: 7
