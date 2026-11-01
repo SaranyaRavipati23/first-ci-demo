@@ -1,0 +1,16 @@
+{
+  "dataset_size": 300,
+  "train_size": 240,
+  "test_size": 60,
+  "accuracy": 1.0,
+  "confusion_matrix": [
+    [
+      18,
+      0
+    ],
+    [
+      0,
+      42
+    ]
+  ]
+}
