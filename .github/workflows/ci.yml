@@ -1,3 +1,4 @@
+
 name: First Python CI
 
 on:
@@ -22,6 +23,11 @@ jobs:
         with:
           python-version: '3.11'
 
+      - name: Upgrade pip
+        run: python -m pip install --upgrade pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
       - name: Run unit tests
-        run: |
-          python -m unittest discover -v
+        run: python -m unittest discover -v
