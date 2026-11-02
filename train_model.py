@@ -20,6 +20,9 @@ METRICS_PATH = os.path.join(BASE_DIR, "metrics.json")
 
 RANDOM_SEED = 42
 
+# Feature columns used for training and prediction (must match app.py)
+FEATURE_COLS = ["internal_marks", "attendance", "assignment_marks", "previous_score"]
+
 
 def generate_dataset(n_samples: int = 300) -> pd.DataFrame:
     """Generate a deterministic synthetic dataset for demonstration purposes."""
@@ -28,9 +31,15 @@ def generate_dataset(n_samples: int = 300) -> pd.DataFrame:
     internal_marks = np.random.randint(15, 101, size=n_samples)
     attendance = np.random.randint(30, 101, size=n_samples)
     assignment_marks = np.random.randint(15, 101, size=n_samples)
+    previous_score = np.random.randint(20, 101, size=n_samples)
 
     # Weighted composite score to determine binary pass (1) or fail (0)
-    score = 0.45 * internal_marks + 0.30 * attendance + 0.25 * assignment_marks
+    score = (
+        0.35 * internal_marks
+        + 0.25 * attendance
+        + 0.20 * assignment_marks
+        + 0.20 * previous_score
+    )
     passed = (score >= 50).astype(int)
 
     df = pd.DataFrame(
@@ -38,6 +47,7 @@ def generate_dataset(n_samples: int = 300) -> pd.DataFrame:
             "internal_marks": internal_marks,
             "attendance": attendance,
             "assignment_marks": assignment_marks,
+            "previous_score": previous_score,
             "passed": passed,
         }
     )
@@ -55,8 +65,7 @@ def train_and_evaluate():
     print(f"Total dataset size: {len(df)} records")
 
     # 2. Features and target split
-    feature_cols = ["internal_marks", "attendance", "assignment_marks"]
-    X = df[feature_cols]
+    X = df[FEATURE_COLS]
     y = df["passed"]
 
     # 3. Train-test split (240 training, 60 testing)

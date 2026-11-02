@@ -15,6 +15,9 @@ DATASET_PATH = os.path.join(BASE_DIR, "student_results.csv")
 MODEL_PATH = os.path.join(BASE_DIR, "student_result_model.pkl")
 METRICS_PATH = os.path.join(BASE_DIR, "metrics.json")
 
+# All four feature columns used by the model (must match train_model.py and app.py)
+FEATURE_COLS = ["internal_marks", "attendance", "assignment_marks", "previous_score"]
+
 
 @unittest.skipUnless(DEPENDENCIES_AVAILABLE, "Required ML dependencies are not installed.")
 class TestMLPipeline(unittest.TestCase):
@@ -23,7 +26,7 @@ class TestMLPipeline(unittest.TestCase):
         self.assertTrue(os.path.isfile(DATASET_PATH), f"Dataset file not found at {DATASET_PATH}")
         df = pd.read_csv(DATASET_PATH)
         self.assertEqual(len(df), 300, f"Expected 300 rows, found {len(df)}")
-        expected_columns = {"internal_marks", "attendance", "assignment_marks", "passed"}
+        expected_columns = set(FEATURE_COLS) | {"passed"}
         self.assertTrue(expected_columns.issubset(df.columns), f"Missing columns in {df.columns}")
 
     def test_model_created(self):
@@ -59,6 +62,7 @@ class TestMLPipeline(unittest.TestCase):
                 "internal_marks": [60, 40],
                 "attendance": [80, 50],
                 "assignment_marks": [70, 45],
+                "previous_score": [75, 40],
             }
         )
         preds = model.predict(sample)
@@ -75,6 +79,7 @@ class TestMLPipeline(unittest.TestCase):
                     "internal_marks": 90,
                     "attendance": 95,
                     "assignment_marks": 90,
+                    "previous_score": 92,
                 }
             ]
         )
@@ -90,6 +95,7 @@ class TestMLPipeline(unittest.TestCase):
                     "internal_marks": 20,
                     "attendance": 30,
                     "assignment_marks": 20,
+                    "previous_score": 22,
                 }
             ]
         )
