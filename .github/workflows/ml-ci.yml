@@ -30,7 +30,7 @@ jobs:
         run: python -m pip install --upgrade pip
 
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: python -m pip install -r requirements.txt
 
       - name: Train student result model
         run: python train_model.py
@@ -55,7 +55,7 @@ jobs:
           cp student_result_model.pkl release_candidate/
           cp metrics.json release_candidate/
           cp requirements.txt release_candidate/
-          printf 'Student Result Prediction ML Application\nRun: python app.py\nEndpoint: POST /predict\n' > release_candidate/DEPLOYMENT.txt
+          printf 'Student Result Prediction ML Application\nRun: python app.py\nHealth Endpoint: GET /\nPrediction Endpoint: POST /predict\nPort: 5000\n' > release_candidate/DEPLOYMENT.txt
 
       - name: Upload release candidate
         uses: actions/upload-artifact@v4
